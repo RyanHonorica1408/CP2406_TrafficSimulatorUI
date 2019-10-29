@@ -39,10 +39,17 @@ public class Car extends CarView {
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(color);
-        g.fillRect(x-width/2,y-height/2,width,height);
-        g.setColor(Color.CYAN);
-        g.fillRect(x+width/10,y-height/2,width/10,height);
+        if(goingEast) {
+            g.setColor(color);
+            g.fillRect(x - width / 2, y - height / 2, width, height);
+            g.setColor(Color.CYAN);
+            g.fillRect(x + width / 10, y - height / 2, width / 10, height);
+        } else if (goingWest){
+            g.setColor(color);
+            g.fillRect(x - width / 2, y - height / 2, width, height);
+            g.setColor(Color.CYAN);
+            g.fillRect(x - width / 10, y - height / 2, width / 10, height);
+        }
         if(atEnd){
             g.clearRect(x-width/2,y-height/2,width,height);
             g.setColor(Color.BLACK);
@@ -66,12 +73,31 @@ public class Car extends CarView {
         if(xSpeed>=0){
             this.setSlowing(true);
             xSpeed -= new_speed;
+            if(xSpeed <0){
+                xSpeed =0;
+            }
+        }
+    }
+
+    public void lookAhead(TrafficLight trafficLight,float speed){
+        if(goingWest){
+            if((trafficLight.getDistance()<x) && trafficLight.isRed()){
+                this.slowDown(speed);
+                this.move();
+                this.update(getWidth(),getHeight());
+            }
+            if(trafficLight.isRed()&& (x<trafficLight.getDistance())){
+                this.speedUp(speed);
+                this.move();
+                this.update(getWidth(),getHeight());
+            }
+            if(trafficLight.isRed() && (trafficLight.getDistance()<x) && (x<trafficLight.getDistance()*1.1)){
+                this.stop();
+                this.move();
+                this.update(getWidth(),getHeight());
+            }
         }
 
-        if(xSpeed*xDir<0){
-            this.setStopped(true);
-            xSpeed =0;
-        }
     }
 
     public void stop(){

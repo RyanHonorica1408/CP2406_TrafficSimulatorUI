@@ -14,6 +14,7 @@ public class Road extends RoadView {
         super(x,y,color);
         this.width = width;
         this.height = height;
+        this.length = width;
 
     }
     public int getRoadId() {

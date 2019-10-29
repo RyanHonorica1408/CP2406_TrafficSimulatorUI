@@ -12,9 +12,9 @@ public class Main {
     public static void main(String[] args) {
         final int DISPLAY_WIDTH = 1200;
         final int DISPLAY_HEIGHT = 960;
-        final int CAR_COUNT = 10;
+        final int CAR_COUNT = 4;
         final int CAR_LENGTH = 50;
-        final int ROAD_COUNT = 7;
+        final int ROAD_COUNT = 2;
         final int TRAFFIC_LIGHT_COUNT =1;
         Car[] cars = new Car[CAR_COUNT];
         Road[] roads = new Road[ROAD_COUNT];
@@ -50,14 +50,17 @@ public class Main {
         }
         int xloc =0;
         for(int j =0; j <roads.length; j++){
-            roads[j] = new Road(xloc+(DISPLAY_WIDTH/4), DISPLAY_HEIGHT/2, DISPLAY_WIDTH/2, 2*CAR_LENGTH, Color.BLACK);
-            xloc += (DISPLAY_WIDTH/2);
+            int length = DISPLAY_WIDTH/ROAD_COUNT;
+
+            roads[j] = new Road(xloc+(length/2),DISPLAY_HEIGHT/2, length, 2*CAR_LENGTH, Color.BLACK);
+            xloc += length;
         }
         int shift=0;
         for(int k = 0; k< trafficLights.length;k++){
-
-            trafficLights[k]= new TrafficLight(DISPLAY_WIDTH/2+shift,DISPLAY_HEIGHT/2-(2*CAR_LENGTH),true);
-            shift += DISPLAY_WIDTH;
+            int light_X = roads[k].getLength();
+            trafficLights[k]= new TrafficLight(shift+light_X,DISPLAY_HEIGHT/2-(2*CAR_LENGTH),true);
+            trafficLights[k].setOnRoad(k+1);
+            shift +=light_X;
         }
 
         JFrame mainFrame = new JFrame("Traffic Simulator Ver 0.1");

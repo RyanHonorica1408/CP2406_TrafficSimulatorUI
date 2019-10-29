@@ -7,12 +7,15 @@ import java.awt.*;
 
 public class Simulator extends JPanel{
     private Timer timer;
+    private int width,height;
     private Car[] cars;
     private Road[] roads;
     private TrafficLight[] trafficLights;
     private int counter =0;
     Simulator(int width, int height){
         setBackground(Color.GRAY);
+        this.width = width;
+        this.height = height;
         setPreferredSize(new Dimension(width,height));
     }
 
@@ -27,38 +30,42 @@ public class Simulator extends JPanel{
             if (cars == null) return;
             float speed = 1;
             for (Car car : cars) {
-                car.move();
-                car.speedUp(speed);
-                car.update(getWidth(), getHeight());
-                speed += 1;
-                if(car.getCarId()>1) {
-                    Car car_next = cars[car.getCarAhead()-1];
 
-                    if (car.x +car.getWidth() >= car_next.x-car_next.getWidth()/2) {
-                        car.stop();
-                    }
+                if(car.getCarId() > 1){
+                    Car car_next =cars[car.getCarAhead()-1];
                 }
+                if(car.isGoingWest()){
+                    for(TrafficLight trafficLight :trafficLights){
+                        if(trafficLight.isGreen()){
+                            car.move();
+                            car.speedUp(speed);
+                            car.update(getWidth(), getHeight());
+                            speed += 1;
+                        }
+                        if(trafficLight.isRed() && (car.x > trafficLight.getDistance())){
+                            car.slowDown(speed/10);
+                            car.move();
+                            car.update(getWidth(), getHeight());
+                            speed -= 1;
+                        }
+                        if(trafficLight.isRed() && (car.x < trafficLight.getDistance())){
+                            car.speedUp(speed/4);
+                            car.move();
+                            car.update(getWidth(), getHeight());
+                            speed += 1;
+                        }
 
-                for(TrafficLight trafficLight : trafficLights){
-                    if((trafficLight.isGreen())&&(counter>30)){
-                        trafficLight.randomStop();
-                        counter =0;
-                    } else if ((counter >60)&&(trafficLight.isRed())){
-                        trafficLight.setGreen(true);
-                        counter =0;
-                    }
-                    if((trafficLight.isRed()) &&(car.getDistance()>trafficLight.getDistance()*0.7)){
-                        car.slowDown(speed/2);
-                        car.setGoingEast(true);
-                    }
-                    if(trafficLight.isRed()){
-                        if(car.getDistance()>trafficLight.getDistance()*0.9){
-                            if(car.getDistance()<trafficLight.getDistance()){
-                                car.stop();
-                            }
+                        if((trafficLight.isGreen())&&(counter >=30)){
+                            trafficLight.randomStop();
+                            counter =0;
+                        }
+                        if(trafficLight.isRed() && (counter >=60)){
+                            trafficLight.setGreen(true);
+                            counter =0;
                         }
 
                     }
+                } else if (car.isGoingEast()){
 
                 }
             }
