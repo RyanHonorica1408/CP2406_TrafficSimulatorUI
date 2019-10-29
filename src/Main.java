@@ -12,14 +12,15 @@ public class Main {
     public static void main(String[] args) {
         final int DISPLAY_WIDTH = 1200;
         final int DISPLAY_HEIGHT = 960;
-        final int CAR_COUNT = 4;
+        final int CAR_COUNT = 7;
         final int CAR_LENGTH = 50;
-        final int ROAD_COUNT = 2;
+        final int ROAD_COUNT = 4;
         final int TRAFFIC_LIGHT_COUNT =1;
         Car[] cars = new Car[CAR_COUNT];
         Road[] roads = new Road[ROAD_COUNT];
         TrafficLight[] trafficLights = new TrafficLight[TRAFFIC_LIGHT_COUNT];
         int x = 0;
+        int xshift = 0;
         int y;
         int carId =1;
         for(int i =0; i <cars.length;i++){
@@ -45,8 +46,10 @@ public class Main {
             }
             Car car = cars[i];
             car.setGoingWest(true);
-            car.x=DISPLAY_WIDTH-width*2;
+            car.x=DISPLAY_WIDTH+xshift;
+            xshift += width*2;
             car.y += height*2;
+
         }
         int xloc =0;
         for(int j =0; j <roads.length; j++){

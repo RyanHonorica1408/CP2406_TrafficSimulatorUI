@@ -60,10 +60,11 @@ public class Car extends CarView {
     }
 
     public void speedUp(float new_speed){
-        if(xSpeed <=6
-        ) {
+        if(xSpeed <=60) {
             xSpeed += new_speed;
         }
+        this.isStopped = false;
+        this.isSlowing = false;
 //        if(ySpeed<6000){
 //            ySpeed +=(int) new_speed;
 //        }
@@ -72,6 +73,7 @@ public class Car extends CarView {
     public void slowDown(float new_speed){
         if(xSpeed>=0){
             this.setSlowing(true);
+            this.isStopped = false;
             xSpeed -= new_speed;
             if(xSpeed <0){
                 xSpeed =0;
@@ -103,6 +105,7 @@ public class Car extends CarView {
     public void stop(){
         xSpeed =0;
         this.setStopped(true);
+        this.isSlowing = false;
     }
 
     public int getDistance(){
