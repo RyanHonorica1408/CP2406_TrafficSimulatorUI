@@ -11,20 +11,19 @@ public class Main {
     private static final Random random = new Random();
     public static void main(String[] args) {
         final int DISPLAY_WIDTH = 1200;
-        final int DISPLAY_HEIGHT = 600;
-        final int CAR_COUNT = 8;
+        final int DISPLAY_HEIGHT = 960;
+        final int CAR_COUNT = 200;
         final int CAR_LENGTH = 50;
         final int ROAD_COUNT = 4;
         final int TRAFFIC_LIGHT_COUNT =1;
         Car[] cars = new Car[CAR_COUNT];
         Road[] roads = new Road[ROAD_COUNT];
         TrafficLight[] trafficLights = new TrafficLight[TRAFFIC_LIGHT_COUNT];
-        //West
         int x = 0;
         int xshift = 0;
         int y;
         int carId =1;
-        for(int i =0; i <cars.length/4;i++){
+        for(int i =0; i <cars.length/2;i++){
              y=(DISPLAY_HEIGHT/2)-(CAR_LENGTH/2);
             int width = CAR_LENGTH;
             int height = width/2;
@@ -52,13 +51,12 @@ public class Main {
             car.y += height*2;
 
         }
-        // East
         x = 0;
         xshift = 0;
         y=0;
-        carId =cars.length/4+1;
+        carId =cars.length/2+1;
 
-        for(int ii = cars.length/4; ii <cars.length; ii++){
+        for(int ii = cars.length/2; ii <cars.length; ii++){
             y=(DISPLAY_HEIGHT/2)-(CAR_LENGTH/2);
             int width = CAR_LENGTH;
             int height = width/2;
@@ -86,64 +84,10 @@ public class Main {
             car.y += 0;
         }
 
-        // South
-        x = DISPLAY_WIDTH/2+((CAR_LENGTH/2)*5);
-        int yshift = 0;
-        y=0;
-        carId =cars.length/2+1;
-        for(int ii = cars.length/2; ii <((cars.length*3)/4); ii++){
-//            y=(DISPLAY_HEIGHT/2)+(CAR_LENGTH/2);
-            int height = CAR_LENGTH;
-            int width = height/2;
-
-            Color color = randomColor();
-            if(carId<=4){
-                cars[ii]= new Car(carId,x,y,width,height,color,2,0);}
-            else {
-                int next = carId-1;
-                if(next <CAR_COUNT) {
-                    cars[ii] = new Car(carId, next, x, y, width, height, color, 2, 0);
-                } else {
-                    cars[ii] = new Car(carId, x, y, width, height, color, 2, 0);
-                }
-            }
-            carId++;
-            Car car = cars[ii];
-            car.setGoingSouth(true);
-            car.y=0+yshift;
-            yshift -= width*2;
-        }
-        // North
-        x = DISPLAY_WIDTH/2+((CAR_LENGTH/2)*3);
-        yshift = 0;
-        y=0;
-        carId =((3*cars.length)/4)+1;
-        for(int ji = ((3*cars.length)/4); ji <cars.length; ji++){
-            int height = CAR_LENGTH;
-            int width = height/2;
-            Color color = randomColor();
-            if(carId<=4){
-                cars[ji]= new Car(carId,x,y,width,height,color,2,0);}
-            else {
-                int next = carId-1;
-                if(next <CAR_COUNT) {
-                    cars[ji] = new Car(carId, next, x, y, width, height, color, 2, 0);
-                } else {
-                    cars[ji] = new Car(carId, x, y, width, height, color, 2, 0);
-                }
-            }
-            carId++;
-            Car car = cars[ji];
-            car.setGoingNorth(true);
-            car.y=DISPLAY_HEIGHT+yshift;
-            yshift -= width*2;
-            car.y += 0;
-        }
-
-
         int xloc =0;
         for(int j =0; j <roads.length/2; j++){
             int length = 2*DISPLAY_WIDTH/(ROAD_COUNT);
+
             roads[j] = new Road(xloc+(length/2),DISPLAY_HEIGHT/2, length, 2*CAR_LENGTH, Color.BLACK);
             xloc += length;
         }
@@ -171,20 +115,9 @@ public class Main {
         simulator.setRoads(roads);
         simulator.setCars(cars);
         simulator.setTrafficLights(trafficLights);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JMenuBar menuBar = new JMenuBar();
-        JMenu file = new JMenu("File");
-        JMenu help = new JMenu("Help");
-        JMenuItem exit = new JMenuItem("Exit");
-        exit.addActionListener(e -> { System.exit(0);});
-        JMenuItem about = new JMenuItem("About");
-        about.addActionListener(actionEvent -> { JOptionPane.showMessageDialog(mainFrame,"iTS OVER 9000!"); });
-        file.add(exit);
-        help.add(about);
-        menuBar.add(file);
-        menuBar.add(help);
+
+
         mainFrame.add(simulator, BorderLayout.CENTER);
-        mainFrame.setJMenuBar(menuBar);
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
