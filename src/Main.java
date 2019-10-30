@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         final int DISPLAY_WIDTH = 1200;
         final int DISPLAY_HEIGHT = 960;
-        final int CAR_COUNT = 7;
+        final int CAR_COUNT = 200;
         final int CAR_LENGTH = 50;
         final int ROAD_COUNT = 4;
         final int TRAFFIC_LIGHT_COUNT =1;
@@ -23,7 +23,7 @@ public class Main {
         int xshift = 0;
         int y;
         int carId =1;
-        for(int i =0; i <cars.length;i++){
+        for(int i =0; i <cars.length/2;i++){
              y=(DISPLAY_HEIGHT/2)-(CAR_LENGTH/2);
             int width = CAR_LENGTH;
             int height = width/2;
@@ -51,14 +51,56 @@ public class Main {
             car.y += height*2;
 
         }
+        x = 0;
+        xshift = 0;
+        y=0;
+        carId =cars.length/2+1;
+
+        for(int ii = cars.length/2; ii <cars.length; ii++){
+            y=(DISPLAY_HEIGHT/2)-(CAR_LENGTH/2);
+            int width = CAR_LENGTH;
+            int height = width/2;
+            Color color = randomColor();
+            if(carId<=4){
+                cars[ii]= new Car(carId,x,y,width,height,color,2,0);}
+            else {
+                int next = carId-1;
+                if(next <CAR_COUNT) {
+                    cars[ii] = new Car(carId, next, x, y, width, height, color, 2, 0);
+                } else {
+                    cars[ii] = new Car(carId, x, y, width, height, color, 2, 0);
+                }
+            }
+            carId++;
+            if(x<=0){
+                x-=width*1.5;
+            } else if (x>= DISPLAY_WIDTH){
+                x-=width*1.5;
+            }
+            Car car = cars[ii];
+            car.setGoingEast(true);
+            car.x=0+xshift;
+            xshift -= width*2;
+            car.y += 0;
+        }
+
         int xloc =0;
-        for(int j =0; j <roads.length; j++){
-            int length = DISPLAY_WIDTH/ROAD_COUNT;
+        for(int j =0; j <roads.length/2; j++){
+            int length = 2*DISPLAY_WIDTH/(ROAD_COUNT);
 
             roads[j] = new Road(xloc+(length/2),DISPLAY_HEIGHT/2, length, 2*CAR_LENGTH, Color.BLACK);
             xloc += length;
         }
+        int yloc =0;
+        xloc = 2*DISPLAY_WIDTH/ROAD_COUNT+(2*CAR_LENGTH);
+        int length = 2*DISPLAY_HEIGHT/(ROAD_COUNT);
+        for(int jj = roads.length/2; jj < roads.length; jj++){
+            roads[jj] = new Road(xloc,yloc+(length/2), 2*CAR_LENGTH, length, Color.BLACK);
+            yloc += length;
+        }
+
         int shift=0;
+
         for(int k = 0; k< trafficLights.length;k++){
             int light_X = roads[k].getLength();
             trafficLights[k]= new TrafficLight(shift+light_X,DISPLAY_HEIGHT/2-(2*CAR_LENGTH),true);
