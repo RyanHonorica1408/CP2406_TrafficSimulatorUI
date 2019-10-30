@@ -55,7 +55,13 @@ public class Car extends CarView {
             g.setColor(color);
             g.fillRect(x - width / 2, y - height / 2, width, height);
             g.setColor(Color.CYAN);
-            g.fillRect(x - width / 10, y - height / 2, width / 10, height);
+            g.fillRect(x-width/2, y+height/10, width, height/10);
+        }
+        if(goingNorth){
+            g.setColor(color);
+            g.fillRect(x - width / 2, y - height / 2, width, height);
+            g.setColor(Color.CYAN);
+            g.fillRect(x-width/2, y-height/10, width, height/10);
         }
         if(atEnd){
             g.clearRect(x-width/2,y-height/2,width,height);
@@ -67,23 +73,42 @@ public class Car extends CarView {
     }
 
     public void speedUp(float new_speed){
-        if(xSpeed <=60) {
-            xSpeed += new_speed;
+        if(goingWest || goingWest) {
+            if (xSpeed <= 60) {
+                xSpeed += new_speed;
+            }
+            this.isStopped = false;
+            this.isSlowing = false;
+        } else if (goingSouth || goingNorth){
+            if(ySpeed<=60){
+                ySpeed += new_speed;
+            }
+            this.isStopped = false;
+            this.isSlowing = false;
         }
-        this.isStopped = false;
-        this.isSlowing = false;
 //        if(ySpeed<6000){
 //            ySpeed +=(int) new_speed;
 //        }
     }
 
     public void slowDown(float new_speed){
-        if(xSpeed>=0){
-            this.setSlowing(true);
-            this.isStopped = false;
-            xSpeed -= new_speed;
-            if(xSpeed <=0){
-                this.stop();
+        if(goingEast || goingWest){
+            if(xSpeed>=0){
+                this.setSlowing(true);
+                this.isStopped = false;
+                xSpeed -= new_speed;
+                if(xSpeed <=0){
+                    this.stop();
+                }
+            }
+        } else if(goingNorth||goingSouth){
+            if(ySpeed>=0){
+                this.setSlowing(true);
+                this.isStopped = false;
+                ySpeed -= new_speed;
+                if(ySpeed <=0){
+                    this.stop();
+                }
             }
         }
     }
@@ -93,6 +118,7 @@ public class Car extends CarView {
         if(isIntersection){
             roadShift = this.width*4;
         }
+        //Going West code
         if (goingWest) {
             if (trafficLight.isGreen()) {
                 this.move();
@@ -138,10 +164,11 @@ public class Car extends CarView {
             } catch(NullPointerException e){
 
             }
+            //Going East Code
         } else if (this.isGoingEast()) {
             if (trafficLight.isGreen()) {
                 this.move();
-                this.speedUp(speed / 10);
+                this.speedUp(speed/10);
                 this.update(boundaryWidth, boundaryHeight);
                 if (this.isStopped()) {
                     this.speedUp(speed);
@@ -178,11 +205,25 @@ public class Car extends CarView {
 
             }
         }
+        else if (this.goingSouth){
+            this.speedUp(speed);
+            this.move();
+            this.update(boundaryWidth,boundaryHeight);
+        }
+        else if (this.goingNorth){
+            this.speedUp(speed);
+            this.move();
+            this.update(boundaryWidth,boundaryWidth);
+        }
     }
 
 
-    public void stop(){
-        xSpeed =0;
+    public void stop() {
+        if (goingWest || goingEast){
+            xSpeed = 0;
+        } else if (goingNorth||goingSouth) {
+            ySpeed =0;
+        }
         this.setStopped(true);
         this.isSlowing = false;
     }

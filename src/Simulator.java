@@ -39,7 +39,7 @@ public class Simulator extends JPanel{
                             trafficLight.setGreen(true);
                             counter = 0;
                         }
-                        if(!(car.getCarId()==1)&&!(car.getCarId() ==cars.length/2+1)){
+                        if(!(car.getCarId() == 1) && !(car.getCarId()==5) && !(car.getCarId()==(cars.length)) && !(car.getCarId()==3)&& !(car.getCarId()== 7) && !(car.getCarId()==4)){
                             Car car_next = cars[car.getCarAhead()-1];
                             car.lookAhead(trafficLight,car_next,speed,getWidth(),getHeight(),true);
                         } else {
