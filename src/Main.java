@@ -199,6 +199,7 @@ public class Main {
         JMenu help = new JMenu("Help");
         JMenuItem exit = new JMenuItem("Exit");
         JMenuItem simulation = new JMenuItem("Begin Current Simulation");
+        JMenuItem simulation_reset = new JMenuItem("Reset Current Simulation");
         JMenuItem city_map = new JMenuItem("Create a New City Map");
         exit.addActionListener(e -> { System.exit(0);});
         JMenuItem about = new JMenuItem("About");
@@ -209,6 +210,13 @@ public class Main {
             mainFrame.pack();
             mainFrame.setVisible(true);
         });
+        simulation_reset.addActionListener(actionEvent -> {
+            mainFrame.remove(simulator);
+            mainFrame.invalidate();
+            mainFrame.validate();
+            simulator.animate();
+            mainFrame.add(simulator);
+        });
         MapCreator mapCreator = new MapCreator(DISPLAY_WIDTH,DISPLAY_HEIGHT);
         city_map.addActionListener(actionEvent -> {
             mainFrame.remove(simulator);
@@ -217,6 +225,7 @@ public class Main {
             mainFrame.validate();
         });
         file.add(simulation);
+        file.add(simulation_reset);
         file.add(exit);
         edit.add(city_map);
         help.add(about);

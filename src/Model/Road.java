@@ -63,6 +63,22 @@ public class Road extends RoadView {
         this.width = width;
     }
 
+    public int getNextRoadId() {
+        return nextRoadId;
+    }
+
+    public void setNextRoadId(int nextRoadId) {
+        this.nextRoadId = nextRoadId;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     @Override
     public void draw(Graphics g) {
         g.setColor(color);
