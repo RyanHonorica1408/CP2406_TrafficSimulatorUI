@@ -5,13 +5,14 @@ import View.RoadView;
 import java.awt.*;
 
 public class Road extends RoadView {
-    private int roadId;
+    private int roadId,nextRoadId;
     private int length,width,height;
     private boolean LightStart,LightEnd;
     private Color color;
 
-    public Road(int x, int y, int width, int height, Color color){
+    public Road(int roadId, int nextRoadId, int x, int y, int width, int height, Color color){
         super(x,y,color);
+        this.roadId = roadId;
         this.width = width;
         this.height = height;
         this.length = width;
@@ -52,6 +53,14 @@ public class Road extends RoadView {
     @Override
     public void update(int boundaryWidth, int boundaryHeight) {
 
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
     }
 
     @Override

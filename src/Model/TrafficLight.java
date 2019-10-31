@@ -6,8 +6,18 @@ import java.awt.*;
 import java.util.Random;
 
 public class TrafficLight extends TrafficLightView {
-    private boolean isGreen,isOrange,isRed,onRoadEnd,probabilityOfChange;
+    private boolean isGreen,isOrange,isRed,onRoadEnd,probabilityOfChange,isEastWest, isNorthSouth;
     private int onRoad;
+
+    public int getNextRoad() {
+        return nextRoad;
+    }
+
+    public void setNextRoad(int nextRoad) {
+        this.nextRoad = nextRoad;
+    }
+
+    private int nextRoad;
     private int trafficLightID;
 
     public int getDistance() {
@@ -20,7 +30,6 @@ public class TrafficLight extends TrafficLightView {
         super(x, y, isGreen);
         width = 20;
         height = width*2;
-        this.distance = x;
     }
 
     public boolean isGreen() {
@@ -84,6 +93,29 @@ public class TrafficLight extends TrafficLightView {
 
     public void setTrafficLightID(int trafficLightID) {
         this.trafficLightID = trafficLightID;
+    }
+
+    public boolean isEastWest() {
+        return isEastWest;
+    }
+
+    public void setEastWest(boolean eastWest) {
+        isEastWest = eastWest;
+        this.distance = x;
+    }
+
+    public boolean isNorthSouth() {
+        return isNorthSouth;
+
+    }
+
+    public void setNorthSouth(boolean northSouth) {
+        isNorthSouth = northSouth;
+        this.distance =y;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 
     @Override

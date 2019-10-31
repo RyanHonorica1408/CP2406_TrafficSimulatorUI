@@ -4,7 +4,7 @@ import View.CarView;
 import java.awt.*;
 
 public class Car extends CarView {
-    private int carId,carAhead, width, height;
+    private int carId,carAhead, width, height,onRoad;
     private int startingX,startingY;
     private boolean goingSouth,goingNorth,goingEast,goingWest,isStopped,isSlowing,atEnd;
     public int length;
@@ -34,7 +34,7 @@ public class Car extends CarView {
 //            System.exit(0);
         }
         if ((y - height / 2 < 0 && yDir < 0) || (y + height / 2 > boundaryHeight && yDir > 0)) {
-            ySpeed = 0;
+            this.setAtEnd(true);
         }
     }
 
@@ -51,6 +51,18 @@ public class Car extends CarView {
             g.setColor(Color.CYAN);
             g.fillRect(x - width / 10, y - height / 2, width / 10, height);
         }
+        if(goingSouth){
+            g.setColor(color);
+            g.fillRect(x - width / 2, y - height / 2, width, height);
+            g.setColor(Color.CYAN);
+            g.fillRect(x-width/2, y+height/10, width, height/10);
+        }
+        if(goingNorth){
+            g.setColor(color);
+            g.fillRect(x - width / 2, y - height / 2, width, height);
+            g.setColor(Color.CYAN);
+            g.fillRect(x-width/2, y-height/10, width, height/10);
+        }
         if(atEnd){
             g.clearRect(x-width/2,y-height/2,width,height);
             g.setColor(Color.BLACK);
@@ -61,125 +73,240 @@ public class Car extends CarView {
     }
 
     public void speedUp(float new_speed){
-        if(xSpeed <=60) {
-            xSpeed += new_speed;
+        if(goingWest || goingEast) {
+            if (this.xSpeed <=6) {
+                this.xSpeed += new_speed;
+            }
+            this.isStopped = false;
+            this.isSlowing = false;
+        } else if (goingSouth || goingNorth){
+            if(this.ySpeed<=6){
+                this.ySpeed += new_speed;
+            }
+            this.isStopped = false;
+            this.isSlowing = false;
         }
-        this.isStopped = false;
-        this.isSlowing = false;
 //        if(ySpeed<6000){
 //            ySpeed +=(int) new_speed;
 //        }
     }
 
     public void slowDown(float new_speed){
-        if(xSpeed>=0){
-            this.setSlowing(true);
-            this.isStopped = false;
-            xSpeed -= new_speed;
-            if(xSpeed <=0){
-                this.stop();
+        if(goingEast || goingWest){
+            if(xSpeed>=0){
+                this.setSlowing(true);
+                this.isStopped = false;
+                xSpeed -= new_speed;
+                if(xSpeed <=0){
+                    this.stop();
+                }
+            }
+        } else if(goingNorth||goingSouth){
+            if(ySpeed>=0){
+                this.setSlowing(true);
+                this.isStopped = false;
+                ySpeed -= new_speed;
+                if(ySpeed <=0){
+                    this.stop();
+                }
             }
         }
     }
-
-    public void lookAhead(TrafficLight trafficLight, Car car_next, float speed,int boundaryWidth, int boundaryHeight,boolean isIntersection) {
-        float roadShift=0;
-        if(isIntersection){
-            roadShift = this.width*4;
-        }
-        if (goingWest) {
-            if (trafficLight.isGreen()) {
-                this.move();
-                this.speedUp(speed / 10);
-                this.update(boundaryWidth, boundaryHeight);
-                if (this.isStopped()) {
-                    this.speedUp(speed);
-                }
-            }
-            if (trafficLight.isRed() && (this.x > trafficLight.getDistance()+roadShift)) {
-                this.slowDown(speed / 20);
-                this.move();
-                this.update(boundaryWidth, boundaryHeight);
-            }
-            if (trafficLight.isRed() && (this.x < trafficLight.getDistance()+roadShift)) {
-                this.speedUp(speed / 4);
-                this.move();
-                this.update(boundaryWidth, boundaryHeight);
-            }
-
-            if (trafficLight.isRed() && (this.x < roadShift+trafficLight.getDistance() * 1.02) && (trafficLight.getDistance()+roadShift < this.x)) {
-                this.stop();
-                this.move();
-                this.update(boundaryWidth, boundaryHeight);
-            }
-            try {
-                if ((car_next.x + 2 * car_next.getWidth()) > this.x) {
-                    this.slowDown(speed);
-                }
-                if (car_next.x + car_next.getWidth() > this.x) {
-                    this.stop();
-                    this.x += car_next.getWidth();
-                }
-                if (car_next.isSlowing()) {
-//                                car.slowDown(speed/20);
-                }
-                if ((car_next.x > this.x - this.getWidth() / 4) && trafficLight.isRed()) {
-                    this.stop();
-                }
-                if(trafficLight.isRed() && (car_next.isStopped() || car_next.isSlowing()) && (car_next.x < this.x - 2*this.width)){
-                    this.speedUp(speed/2);
-                }
-            } catch(NullPointerException e){
-
-            }
-        } else if (this.isGoingEast()) {
-            if (trafficLight.isGreen()) {
-                this.move();
-                this.speedUp(speed / 10);
-                this.update(boundaryWidth, boundaryHeight);
-                if (this.isStopped()) {
-                    this.speedUp(speed);
-                }
-            } if (trafficLight.isRed() && (this.x < trafficLight.getDistance())) {
-                this.slowDown(speed / 20);
-                this.move();
-                this.update(boundaryWidth, boundaryHeight);
-            } else if (trafficLight.isRed() && (this.x > trafficLight.getDistance())) {
-                this.speedUp(speed/4);
-                this.move();
-                this.update(boundaryWidth, boundaryHeight);
-            } if (trafficLight.isRed() && (trafficLight.getDistance()*0.98< this.x) && ( this.x< trafficLight.getDistance())) {
-                this.stop();
-                this.move();
-                this.update(boundaryWidth, boundaryHeight);
-            }
-            try {
-                if (this.x > car_next.x- 2*car_next.getWidth()) {
-                    this.slowDown(speed);
-                }
-                if(this.x+ this.width > car_next.x){
-                    this.stop();
-                    this.x -= car_next.getWidth();
-                }
-                else if ((car_next.x < this.x + this.getWidth()/4) && trafficLight.isRed()) {
-                    this.stop();
-                }
-                if(trafficLight.isRed() && (car_next.isStopped() || car_next.isSlowing()) && (car_next.x > this.x + 2*this.width)){
-                    this.speedUp(speed/2);
-                }
-
-            } catch(NullPointerException e){
-
-            }
-        }
-    }
-
 
     public void stop(){
-        xSpeed =0;
-        this.setStopped(true);
-        this.isSlowing = false;
+        if(goingEast || goingWest) {
+            xSpeed = 0;
+            this.setStopped(true);
+            this.isSlowing = false;
+        } else if (goingNorth || goingSouth){
+            ySpeed =0;
+            this.setStopped(true);
+            this.isSlowing = false;
+        }
     }
+
+
+    public void lookAhead(TrafficLight trafficLight, Car car_next, float speed,int boundaryWidth, int boundaryHeight,boolean isIntersection) {
+        float roadShift = 0;
+        if (isIntersection) {
+            roadShift = this.width * 4;
+        }
+        if ((trafficLight.getOnRoad() == this.getOnRoad()) || (trafficLight.getNextRoad() == this.getOnRoad())) {
+            //Going West code
+            if (goingWest) {
+                if (trafficLight.isGreen()) {
+                    this.move();
+                    this.speedUp(speed / 10);
+                    this.update(boundaryWidth, boundaryHeight);
+                    if (this.isStopped()) {
+                        this.speedUp(speed);
+                    }
+                }
+                if (trafficLight.isRed() && (this.x > trafficLight.getDistance() + roadShift)) {
+                    this.slowDown(speed / 20);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+                if (trafficLight.isRed() && (this.x < trafficLight.getDistance() + roadShift)) {
+                    this.speedUp(speed / 4);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+
+                if (trafficLight.isRed() && (this.x < roadShift + trafficLight.getDistance() * 1.02) && (trafficLight.getDistance() + roadShift < this.x)) {
+                    this.stop();
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+                try {
+                    if ((car_next.x + 2 * car_next.getWidth()) > this.x) {
+                        this.slowDown(speed);
+                    }
+                    if (car_next.x + car_next.getWidth() > this.x) {
+                        this.stop();
+                        this.x += car_next.getWidth();
+                    }
+                    if (car_next.isSlowing()) {
+//                                car.slowDown(speed/20);
+                    }
+                    if ((car_next.x > this.x - this.getWidth() / 4) && trafficLight.isRed()) {
+                        this.stop();
+                    }
+                    if (trafficLight.isRed() && (car_next.isStopped() || car_next.isSlowing()) && (car_next.x < this.x - 2 * this.width)) {
+                        this.speedUp(speed / 2);
+                    }
+                } catch (NullPointerException e) {
+
+                }
+                //Going East Code
+            }
+            if (this.isGoingEast()) {
+                if (trafficLight.isGreen()) {
+                    this.move();
+                    this.speedUp(speed / 10);
+                    this.update(boundaryWidth, boundaryHeight);
+                    if (this.isStopped()) {
+                        this.speedUp(speed);
+                    }
+
+                }
+                if (trafficLight.isRed() && (this.x < trafficLight.getDistance())) {
+                    this.slowDown(speed / 20);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+                if (trafficLight.isRed() && (this.x > trafficLight.getDistance())) {
+                    this.speedUp(speed / 4);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+                if (trafficLight.isRed() && (trafficLight.getDistance() * 0.98 < this.x) && (this.x < trafficLight.getDistance())) {
+                    this.stop();
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+                try {
+                    if (this.x > car_next.x - 2 * car_next.getWidth()) {
+                        this.slowDown(speed);
+                    }
+                    if (this.x + this.width > car_next.x) {
+                        this.stop();
+                        this.x -= car_next.getWidth();
+                    } else if ((car_next.x < this.x + this.getWidth() / 4) && trafficLight.isRed()) {
+                        this.stop();
+                    }
+                    if (trafficLight.isRed() && (car_next.isStopped() || car_next.isSlowing()) && (car_next.x > this.x + 2 * this.width)) {
+                        this.speedUp(speed / 2);
+                    }
+
+                } catch (NullPointerException e) {
+
+                }
+                //Going South Code
+            } else if (this.goingSouth) {
+                if (trafficLight.isGreen()) {
+                    this.speedUp(speed/10);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                    if (this.isStopped()) {
+                        this.speedUp(speed);
+                    }
+                }
+                if(trafficLight.isRed() && (this.y < trafficLight.getDistance())){
+                    this.slowDown(speed/20);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                } else if (trafficLight.isRed() && ((trafficLight.getDistance() * 0.98)-(2*roadShift) < this.y) && (this.y < trafficLight.getDistance())) {
+                    this.stop();
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+                if(trafficLight.isRed() && (this.y > trafficLight.getDistance()-2*roadShift)){
+                    this.speedUp(speed / 4);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+
+                try {
+                    if (this.y > car_next.y - 2*car_next.length) {
+                        this.slowDown(speed);
+                    }
+                    if (this.y + this.length > car_next.y) {
+                        this.stop();
+                        this.y -= car_next.length;
+                    }
+                    if (trafficLight.isRed() && (car_next.isStopped() || car_next.isSlowing()) && (car_next.y > this.y + 2 * this.length)) {
+                        this.speedUp(speed / 2);
+                    }
+                }
+                catch (NullPointerException e) {
+
+                }
+//Going North Code
+            } else if (this.goingNorth) {
+                if (trafficLight.isGreen()) {
+                    this.speedUp(speed/10);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                    if (this.isStopped()) {
+                        this.speedUp(speed);
+                    }
+                }
+                if(trafficLight.isRed() && (this.y > trafficLight.getDistance())){
+                    this.slowDown(speed/20);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                } else if (trafficLight.isRed() && ((trafficLight.getDistance() * 1.01)< this.y) && (this.y > trafficLight.getDistance())) {
+                    this.stop();
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+                if(trafficLight.isRed() && (this.y < trafficLight.getDistance())){
+                    this.speedUp(speed / 4);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                }
+
+                try {
+                    if (this.y < car_next.y + 2*car_next.length) {
+                        this.slowDown(speed);
+                    }
+                    if (this.y - this.length < car_next.y) {
+                        this.stop();
+                        this.y += car_next.length;
+                    }
+                    if (trafficLight.isRed() && (car_next.isStopped() || car_next.isSlowing()) && (car_next.y < this.y - 2 * this.length)) {
+                        this.speedUp(speed / 4);
+                    }
+                }
+                catch (NullPointerException e) {
+
+                }
+            }
+        }
+    }
+
+
 
     public int getDistance(){
         return (x-startingX);
@@ -292,5 +419,13 @@ public class Car extends CarView {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public int getOnRoad() {
+        return onRoad;
+    }
+
+    public void setOnRoad(int onRoad) {
+        this.onRoad = onRoad;
     }
 }

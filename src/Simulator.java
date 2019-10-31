@@ -12,6 +12,7 @@ public class Simulator extends JPanel{
     private Road[] roads;
     private TrafficLight[] trafficLights;
     private int counter =0;
+    private int counter1 =0;
     Simulator(int width, int height){
         setBackground(Color.GRAY);
         this.width = width;
@@ -30,8 +31,9 @@ public class Simulator extends JPanel{
             if (cars == null) return;
             float speed = 1;
             for (Car car : cars) {
-                    for(TrafficLight trafficLight :trafficLights){
-                        if ((trafficLight.isGreen()) && (counter >= 30)) {
+                for(TrafficLight trafficLight :trafficLights) {
+                    if(trafficLight.isEastWest()) {
+                        if ((trafficLight.isGreen()) && (counter >= 60)) {
                             trafficLight.randomStop();
                             counter = 0;
                         }
@@ -39,22 +41,38 @@ public class Simulator extends JPanel{
                             trafficLight.setGreen(true);
                             counter = 0;
                         }
-                        if(!(car.getCarId()==1)&&!(car.getCarId() ==cars.length/2+1)){
-                            Car car_next = cars[car.getCarAhead()-1];
-                            car.lookAhead(trafficLight,car_next,speed,getWidth(),getHeight(),true);
+                        int id = car.getCarId();
+                        int cars_length = cars.length;
+                        if ((id != 1) && (id != cars_length / 4 + 1) && (id != cars_length / 2 + 1) && (id != (3 * cars_length) / 4 + 1)) {
+                            Car car_next = cars[car.getCarAhead() - 1];
+                            car.lookAhead(trafficLight, car_next, speed, getWidth(), getHeight(), true);
                         } else {
-                            car.lookAhead(trafficLight,null,speed,getWidth(),getHeight(),true);
+                            car.lookAhead(trafficLight, null, speed, getWidth(), getHeight(), true);
+                        }
+                    } else if (trafficLight.isNorthSouth()){
+                        if ((trafficLight.isGreen()) && (counter1 >= 30)) {
+                            trafficLight.randomStop();
+                            counter1 = 0;
+                        }
+                        if (trafficLight.isRed() && (counter1 >= 60)) {
+                            trafficLight.setGreen(true);
+                            counter1 = 0;
+                        }
+                        int id = car.getCarId();
+                        int cars_length = cars.length;
+                        if ((id != 1) && (id != cars_length / 4 + 1) && (id != cars_length / 2 + 1) && (id != (3 * cars_length) / 4 + 1)) {
+                            Car car_next = cars[car.getCarAhead() - 1];
+                            car.lookAhead(trafficLight, car_next, speed, getWidth(), getHeight(), true);
+                        } else {
+                            car.lookAhead(trafficLight, null, speed, getWidth(), getHeight(), true);
                         }
 
-
                     }
-
                 }
-            speed++;
-            if(speed > 60){
-                speed = 60;
             }
+            speed++;
             counter ++;
+            counter1++;
             repaint();
         });
         timer.start();
