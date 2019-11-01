@@ -5,9 +5,10 @@ import java.awt.*;
 
 public class Car extends CarView {
     private int carId,carAhead, width, height,onRoad;
-    private int startingX,startingY;
+    private final int startingX;
+    private final int startingY;
     private boolean goingSouth,goingNorth,goingEast,goingWest,isStopped,isSlowing,atEnd;
-    public int length;
+    private int length;
 
 
     public Car(int carId, int x, int y, int width, int height, Color color,int xspeed,int yspeed) {
@@ -31,7 +32,6 @@ public class Car extends CarView {
     public void update(int boundaryWidth, int boundaryHeight) {
         if ((x - width / 2 < 0 && xDir < 0) || (x + width / 2 > boundaryWidth && xDir > 0)) {
             this.setAtEnd(true);
-//            System.exit(0);
         }
         if ((y - height / 2 < 0 && yDir < 0) || (y + height / 2 > boundaryHeight && yDir > 0)) {
             this.setAtEnd(true);
@@ -72,7 +72,7 @@ public class Car extends CarView {
         }
     }
 
-    public void speedUp(float new_speed){
+    private void speedUp(float new_speed){
         if(goingWest || goingEast) {
             if (this.xSpeed <=6) {
                 this.xSpeed += new_speed;
@@ -86,12 +86,9 @@ public class Car extends CarView {
             this.isStopped = false;
             this.isSlowing = false;
         }
-//        if(ySpeed<6000){
-//            ySpeed +=(int) new_speed;
-//        }
     }
 
-    public void slowDown(float new_speed){
+    private void slowDown(float new_speed){
         if(goingEast || goingWest){
             if(xSpeed>=0){
                 this.setSlowing(true);
@@ -113,7 +110,7 @@ public class Car extends CarView {
         }
     }
 
-    public void stop(){
+    private void stop(){
         if(goingEast || goingWest) {
             xSpeed = 0;
             this.setStopped(true);
@@ -166,9 +163,6 @@ public class Car extends CarView {
                         this.stop();
                         this.x += car_next.getWidth();
                     }
-                    if (car_next.isSlowing()) {
-//                                car.slowDown(speed/20);
-                    }
                     if ((car_next.x > this.x - this.getWidth() / 4) && trafficLight.isRed()) {
                         this.stop();
                     }
@@ -176,6 +170,7 @@ public class Car extends CarView {
                         this.speedUp(speed / 2);
                     }
                 } catch (NullPointerException e) {
+                    System.out.println(e);
 
                 }
                 //Going East Code
@@ -200,7 +195,7 @@ public class Car extends CarView {
                     this.move();
                     this.update(boundaryWidth, boundaryHeight);
                 }
-                if (trafficLight.isRed() && (trafficLight.getDistance() * 0.98 < this.x) && (this.x < trafficLight.getDistance())) {
+                if (trafficLight.isRed() && (trafficLight.getDistance() * 0.98 <= this.x) && (this.x < trafficLight.getDistance())) {
                     this.stop();
                     this.move();
                     this.update(boundaryWidth, boundaryHeight);
@@ -220,7 +215,7 @@ public class Car extends CarView {
                     }
 
                 } catch (NullPointerException e) {
-
+                    System.out.println(e);
                 }
                 //Going South Code
             } else if (this.goingSouth) {
@@ -232,20 +227,20 @@ public class Car extends CarView {
                         this.speedUp(speed);
                     }
                 }
-                if(trafficLight.isRed() && (this.y < trafficLight.getDistance())){
-                    this.slowDown(speed/20);
+                if(trafficLight.isRed() && (this.y < trafficLight.getDistance())) {
+                    this.slowDown(speed / 20);
                     this.move();
                     this.update(boundaryWidth, boundaryHeight);
-                } else if (trafficLight.isRed() && ((trafficLight.getDistance() * 0.98)-(2*roadShift) < this.y) && (this.y < trafficLight.getDistance())) {
+                } if(trafficLight.isRed() && (this.y > trafficLight.getDistance()-2*roadShift)){
+                    this.speedUp(speed / 4);
+                    this.move();
+                    this.update(boundaryWidth, boundaryHeight);
+                } else if (trafficLight.isRed() && ((trafficLight.getDistance() * 0.95)-(2*roadShift) < this.y) && (this.y < trafficLight.getDistance())) {
                     this.stop();
                     this.move();
                     this.update(boundaryWidth, boundaryHeight);
                 }
-                if(trafficLight.isRed() && (this.y > trafficLight.getDistance()-2*roadShift)){
-                    this.speedUp(speed / 4);
-                    this.move();
-                    this.update(boundaryWidth, boundaryHeight);
-                }
+
 
                 try {
                     if (this.y > car_next.y - 2*car_next.length) {
@@ -260,7 +255,7 @@ public class Car extends CarView {
                     }
                 }
                 catch (NullPointerException e) {
-
+                    System.out.println(e);
                 }
 //Going North Code
             } else if (this.goingNorth) {
@@ -300,7 +295,7 @@ public class Car extends CarView {
                     }
                 }
                 catch (NullPointerException e) {
-
+                    System.out.println(e);
                 }
             }
         }
@@ -335,7 +330,7 @@ public class Car extends CarView {
 
     }
 
-    public boolean isGoingEast() {
+    private boolean isGoingEast() {
         return goingEast;
     }
 
@@ -365,19 +360,19 @@ public class Car extends CarView {
         return startingY;
     }
 
-    public boolean isStopped() {
+    private boolean isStopped() {
         return isStopped;
     }
 
-    public void setStopped(boolean stopped) {
+    private void setStopped(boolean stopped) {
         isStopped = stopped;
     }
 
-    public boolean isSlowing() {
+    private boolean isSlowing() {
         return isSlowing;
     }
 
-    public void setSlowing(boolean slowing) {
+    private void setSlowing(boolean slowing) {
         isSlowing = slowing;
     }
 
@@ -385,7 +380,7 @@ public class Car extends CarView {
         return atEnd;
     }
 
-    public void setAtEnd(boolean atEnd) {
+    private void setAtEnd(boolean atEnd) {
         this.atEnd = atEnd;
     }
 
@@ -405,7 +400,7 @@ public class Car extends CarView {
         this.carAhead = carAhead;
     }
 
-    public int getWidth() {
+    private int getWidth() {
         return width;
     }
 
@@ -421,7 +416,7 @@ public class Car extends CarView {
         this.height = height;
     }
 
-    public int getOnRoad() {
+    private int getOnRoad() {
         return onRoad;
     }
 

@@ -4,11 +4,12 @@ import java.awt.*;
 
 public abstract class CarView {
     public int x,y;
-    public Color color;
-    public int xDir, yDir;
+    protected final Color color;
+    protected int xDir;
+    protected int yDir;
     public float xSpeed, ySpeed;
 
-    public CarView(int x, int y, Color color,int xv,int yv) {
+    protected CarView(int x, int y, Color color, int xv, int yv) {
         this.x = x;
         this.y = y;
         this.color = color;
@@ -18,7 +19,7 @@ public abstract class CarView {
         ySpeed = yv;
     }
 
-    public void move(){
+    protected void move(){
         x += (int) xSpeed*xDir;
         y += (int) ySpeed*yDir;
     }

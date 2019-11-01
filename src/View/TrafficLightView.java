@@ -1,14 +1,15 @@
 package View;
 
-import Model.TrafficLight;
-
 import java.awt.*;
 
 public abstract class TrafficLightView {
-    public int x,y, width,height;
-    public boolean isGreen;
+    public int x;
+    public int y;
+    protected int width;
+    protected int height;
+    private final boolean isGreen;
 
-    public TrafficLightView(int x, int y, Boolean isGreen){
+    protected TrafficLightView(int x, int y, Boolean isGreen){
         this.x = x;
         this.y = y;
         this.isGreen = isGreen;

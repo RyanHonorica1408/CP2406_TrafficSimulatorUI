@@ -12,6 +12,16 @@ public class Road extends RoadView {
 
     public Road(int roadId, int nextRoadId, int x, int y, int width, int height, Color color){
         super(x,y,color);
+        this.nextRoadId = nextRoadId;
+        this.roadId = roadId;
+        this.width = width;
+        this.height = height;
+        this.length = width;
+
+    }
+
+    Road(int roadId, int x, int y, int width, int height, Color color){
+        super(x,y,color);
         this.roadId = roadId;
         this.width = width;
         this.height = height;

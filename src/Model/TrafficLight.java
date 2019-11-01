@@ -9,7 +9,7 @@ public class TrafficLight extends TrafficLightView {
     private boolean isGreen,isOrange,isRed,onRoadEnd,probabilityOfChange,isEastWest, isNorthSouth;
     private int onRoad;
 
-    public int getNextRoad() {
+    int getNextRoad() {
         return nextRoad;
     }
 
@@ -20,14 +20,15 @@ public class TrafficLight extends TrafficLightView {
     private int nextRoad;
     private int trafficLightID;
 
-    public int getDistance() {
+    int getDistance() {
         return distance;
     }
 
     private int distance;
-    private Random random = new Random();
-    public TrafficLight(int x, int y, Boolean isGreen) {
+    private final Random random = new Random();
+    public TrafficLight(int trafficLightID, int x, int y, Boolean isGreen) {
         super(x, y, isGreen);
+        this.trafficLightID = trafficLightID;
         width = 20;
         height = width*2;
     }
@@ -46,7 +47,7 @@ public class TrafficLight extends TrafficLightView {
         return isOrange;
     }
 
-    public void setOrange(boolean orange) {
+    private void setOrange(boolean orange) {
         isOrange = orange;
         isGreen =!orange;
         isRed = !orange;
@@ -56,7 +57,7 @@ public class TrafficLight extends TrafficLightView {
         return isRed;
     }
 
-    public void setRed(boolean red) {
+    private void setRed(boolean red) {
         isRed = red;
         isGreen = !red;
         isOrange = !red;

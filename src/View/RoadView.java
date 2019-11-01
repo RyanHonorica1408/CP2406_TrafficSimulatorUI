@@ -3,8 +3,9 @@ package View;
 import java.awt.*;
 
 public abstract class RoadView {
-    public int x,y;
-    public Color color;
+    public final int x;
+    public final int y;
+    private final Color color;
 
     public RoadView(int x, int y, Color colorRoad){
         this.x = x;
