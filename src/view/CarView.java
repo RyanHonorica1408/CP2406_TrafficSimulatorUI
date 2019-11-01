@@ -1,9 +1,9 @@
-package View;
+package view;
 
 import java.awt.*;
 
 public abstract class CarView {
-    public int x,y;
+    public int x, y;
     protected final Color color;
     protected int xDir;
     protected int yDir;
@@ -19,11 +19,9 @@ public abstract class CarView {
         ySpeed = yv;
     }
 
-    protected void move(){
-        x += (int) xSpeed*xDir;
-        y += (int) ySpeed*yDir;
+    protected void move() {
+        x += (int) xSpeed * xDir;
+        y += (int) ySpeed * yDir;
     }
 
-    public abstract void update(int boundaryWidth, int boundaryHeight);
-    public abstract void draw(Graphics g);
 }
